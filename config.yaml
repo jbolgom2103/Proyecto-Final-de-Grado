@@ -1,0 +1,62 @@
+global:
+  domain: "pyme.local"
+  network_prefix: "192.168.10"
+
+machines:
+  - name: "DC"
+    hostname: "Servidor-Dominio"
+    box: "jborean93/WindowsServer2019"
+    ip: "5"
+    ram: 4096
+    cpus: 2
+    gui: true
+    os_type: "windows"
+    scripts:
+      - "provisioning/servidor_dominio1.ps1"
+      - "provisioning/servidor_dominio2.ps1"
+
+  - name: "Servidor-SIEM"
+    hostname: "Servidor-SIEM"
+    box: "ubuntu/jammy64"
+    ip: "10"
+    ram: 4096
+    cpus: 2
+    gui: false
+    os_type: "linux"
+    ports:
+      - { guest: 443, host: 8443 }
+    scripts:
+      - "provisioning/servidor_siem.sh"
+
+  - name: "Servidor-WS"
+    hostname: "Servidor-Web"
+    box: "ubuntu/jammy64"
+    ip: "30"
+    ram: 1024
+    cpus: 1
+    gui: false
+    os_type: "linux"
+    scripts:
+      - "provisioning/servidor_web.sh"
+
+  - name: "Servidor-BD"
+    hostname: "Servidor-BD"
+    box: "ubuntu/jammy64"
+    ip: "40"
+    ram: 1024
+    cpus: 1
+    gui: false
+    os_type: "linux"
+    scripts:
+      - "provisioning/servidor_bd.sh"
+
+  - name: "PC-Empleado"
+    hostname: "PC-Empleado"
+    box: "gusztavvargadr/windows-10"
+    ip: "50"
+    ram: 2048
+    cpus: 2
+    gui: true
+    os_type: "windows"
+    scripts:
+      - "provisioning/empleado.ps1"
