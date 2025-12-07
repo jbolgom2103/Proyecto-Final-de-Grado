@@ -7,7 +7,19 @@ settings = YAML.load_file('config.yaml')
 GLOBAL_NET = settings['global']['network_prefix']
 
 Vagrant.configure("2") do |config|
+  # --- CONFIGURACIÓN PARA DISCOS LENTOS / EXTERNOS ---
+  
+  # Enviar una señal de "estoy vivo" cada 30 segundos
+  config.ssh.keep_alive = true
+  
+  # Forzar al cliente SSH a no desconectar aunque la VM no responda en un rato
+  # ServerAliveInterval=30: Manda un paquete cada 30s
+  # ServerAliveCountMax=60: Espera hasta 60 fallos antes de rendirse (30s * 60 = 30 minutos de paciencia)
+  config.ssh.extra_args = ["-o", "ServerAliveInterval=30", "-o", "ServerAliveCountMax=60", "-o", "TCPKeepAlive=yes"]
 
+  # Aumentar el tiempo de espera de arranque (boot) a 20 minutos
+  # Vital para discos externos
+  config.vm.boot_timeout = 1200
   # 2. Iterar sobre cada máquina definida en el YAML
   settings['machines'].each do |machine|
     
